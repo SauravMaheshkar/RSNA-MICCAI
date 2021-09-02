@@ -2,9 +2,10 @@ import numpy as np
 import torch
 from torch.utils import data as torch_data
 
+from .aug import seq
 from .utils import load_dicom_images_3d
 
-__all__ = ["Dataset"]
+__all__ = ["Dataset", "AugDataset"]
 
 
 class Dataset(torch_data.Dataset):
@@ -34,17 +35,12 @@ class Dataset(torch_data.Dataset):
                 str(scan_id).zfill(5), mri_type=self.mri_type[index], split=self.split
             )
         else:
-            if self.augment:
-                rotation = np.random.randint(0, 4)
-            else:
-                rotation = 0
-
             data = load_dicom_images_3d(
-                str(scan_id).zfill(5),
-                mri_type=self.mri_type[index],
-                split="train",
-                rotate=rotation,
+                str(scan_id).zfill(5), mri_type=self.mri_type[index], split="train"
             )
+
+            if self.augment:
+                data = seq(images=data)
 
         if self.targets is None:
             return {"X": torch.tensor(data).float(), "id": scan_id}
