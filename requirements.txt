@@ -1,0 +1,9 @@
+black==21.8b0
+efficientnet-pytorch-3d @ git+https://github.com/shijianjian/EfficientNet-PyTorch-3D@3e79bcd06216b2e831bf3300fff9636cce2cd0d1
+isort==5.9.3
+numpy==1.21.2
+opencv-python==4.5.3.56
+pydicom==2.2.1
+scikit-learn==0.24.2
+torch==1.9.0
+wandb==0.12.1
