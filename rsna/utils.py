@@ -6,27 +6,18 @@ import numpy as np
 import pydicom
 from pydicom.pixel_data_handlers.util import apply_voi_lut
 
-__all__ = ["load_dicom_images_3d"]
+__all__ = ["load_dicom_images_3d", "load_rand_dicom_images"]
 
 data_directory = "../input/rsna-miccai-brain-tumor-radiogenomic-classification"
 
 
-def load_dicom_image(path, img_size: int = 256, voi_lut: bool = True, rotate: int = 0):
-    dicom = pydicom.read_file(path)
+def load_dicom_image(data_directory, img_size: int = 256, voi_lut: bool = True):
+    dicom = pydicom.read_file(data_directory)
     data = dicom.pixel_array
     if voi_lut:
         data = apply_voi_lut(dicom.pixel_array, dicom)
     else:
         data = dicom.pixel_array
-
-    if rotate > 0:
-        rot_choices = [
-            0,
-            cv2.ROTATE_90_CLOCKWISE,
-            cv2.ROTATE_90_COUNTERCLOCKWISE,
-            cv2.ROTATE_180,
-        ]
-        data = cv2.rotate(data, rot_choices[rotate])
 
     data = cv2.resize(data, (img_size, img_size))
     return data
@@ -38,7 +29,6 @@ def load_dicom_images_3d(
     img_size: int = 256,
     mri_type: str = "FLAIR",
     split: str = "train",
-    rotate: int = 0,
 ):
 
     files = sorted(
@@ -52,7 +42,7 @@ def load_dicom_images_3d(
     num_imgs2 = num_imgs // 2
     p1 = max(0, middle - num_imgs2)
     p2 = min(len(files), middle + num_imgs2)
-    img3d = np.stack([load_dicom_image(f, rotate=rotate) for f in files[p1:p2]]).T
+    img3d = np.stack([load_dicom_image(f) for f in files[p1:p2]]).T
     if img3d.shape[-1] < num_imgs:
         n_zero = np.zeros((img_size, img_size, num_imgs - img3d.shape[-1]))
         img3d = np.concatenate((img3d, n_zero), axis=-1)
