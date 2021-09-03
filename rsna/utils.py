@@ -6,7 +6,7 @@ import numpy as np
 import pydicom
 from pydicom.pixel_data_handlers.util import apply_voi_lut
 
-__all__ = ["load_dicom_images_3d", "load_rand_dicom_images"]
+__all__ = ["load_dicom_images_3d"]
 
 data_directory = "../input/rsna-miccai-brain-tumor-radiogenomic-classification"
 

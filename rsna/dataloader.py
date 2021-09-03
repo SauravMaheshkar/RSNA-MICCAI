@@ -5,7 +5,7 @@ from torch.utils import data as torch_data
 from .aug import seq
 from .utils import load_dicom_images_3d
 
-__all__ = ["Dataset", "AugDataset"]
+__all__ = ["Dataset"]
 
 
 class Dataset(torch_data.Dataset):
