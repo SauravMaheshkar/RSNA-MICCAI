@@ -1,10 +1,12 @@
 import time
-from typing import Callable, Union
+from typing import Any, Callable, Sized, Union
 
 import numpy as np
 import torch
+import torch.nn as nn
 import wandb
 from sklearn.metrics import roc_auc_score
+from torch.optim import Optimizer
 
 __all__ = ["Trainer"]
 
@@ -12,9 +14,9 @@ __all__ = ["Trainer"]
 class Trainer:
     def __init__(
         self,
-        model: Callable,
+        model: nn.Module,
         device: Union[str, torch.device],
-        optimizer: Callable,
+        optimizer: Optimizer,
         criterion: Callable,
     ):
         self.model = model
@@ -24,13 +26,13 @@ class Trainer:
 
         self.best_valid_score = np.inf
         self.n_patience = 0
-        self.lastmodel = None
+        self.lastmodel: Any = None
 
     def fit(
         self,
         epochs: int,
-        train_loader: Callable,
-        valid_loader: Callable,
+        train_loader: Sized,
+        valid_loader: Sized,
         save_path: str,
         patience: int,
     ):
@@ -74,12 +76,12 @@ class Trainer:
                 )
                 break
 
-    def train_epoch(self, train_loader: Callable):
+    def train_epoch(self, train_loader: Sized):
         self.model.train()
         t = time.time()
         sum_loss = 0
 
-        for step, batch in enumerate(train_loader, 1):
+        for step, batch in enumerate(train_loader, 1):  # type: ignore
             X = batch["X"].to(self.device)
             targets = batch["y"].to(self.device)
             self.optimizer.zero_grad()
@@ -101,14 +103,14 @@ class Trainer:
 
         return sum_loss / len(train_loader), int(time.time() - t)
 
-    def valid_epoch(self, valid_loader: Callable):
+    def valid_epoch(self, valid_loader: Sized):
         self.model.eval()
         t = time.time()
         sum_loss = 0
         y_all = []
         outputs_all = []
 
-        for step, batch in enumerate(valid_loader, 1):
+        for step, batch in enumerate(valid_loader, 1):  # type: ignore
             with torch.no_grad():
                 X = batch["X"].to(self.device)
                 targets = batch["y"].to(self.device)
@@ -133,8 +135,12 @@ class Trainer:
 
         return sum_loss / len(valid_loader), auc, int(time.time() - t)
 
-    def save_model(self, n_epoch: int, save_path: str, loss: float, auc: float):
-        self.lastmodel = f"{save_path}-e{n_epoch}-loss{loss:.3f}-auc{auc:.3f}.pth"
+    def save_model(
+        self, n_epoch: int, save_path: str, loss: float, auc: float
+    ):  # noqa: E501
+        self.lastmodel = (
+            f"{save_path}-e{n_epoch}-loss{loss:.3f}-auc{auc:.3f}.pth"  # noqa: E501
+        )
         torch.save(
             {
                 "model_state_dict": self.model.state_dict(),

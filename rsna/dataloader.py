@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 from torch.utils import data as torch_data
 
@@ -32,11 +31,15 @@ class Dataset(torch_data.Dataset):
         scan_id = self.paths[index]
         if self.targets is None:
             data = load_dicom_images_3d(
-                str(scan_id).zfill(5), mri_type=self.mri_type[index], split=self.split
+                str(scan_id).zfill(5),
+                mri_type=self.mri_type[index],
+                split=self.split,  # noqa: E501
             )
         else:
             data = load_dicom_images_3d(
-                str(scan_id).zfill(5), mri_type=self.mri_type[index], split="train"
+                str(scan_id).zfill(5),
+                mri_type=self.mri_type[index],
+                split="train",  # noqa: E501
             )
 
             if self.augment:
@@ -46,6 +49,7 @@ class Dataset(torch_data.Dataset):
             return {"X": torch.tensor(data).float(), "id": scan_id}
         else:
             y = torch.tensor(
-                abs(self.targets[index] - self.label_smoothing), dtype=torch.float
+                abs(self.targets[index] - self.label_smoothing),
+                dtype=torch.float,  # noqa: E501
             )
             return {"X": torch.tensor(data).float(), "y": y}
