@@ -19,10 +19,7 @@ torch.backends.cudnn.benchmark = True
 data_directory = "../input/rsna-miccai-brain-tumor-radiogenomic-classification"
 train_df = pd.read_csv(f"{data_directory}/train_labels.csv")
 df_train, df_valid = sk_model_selection.train_test_split(
-    train_df,
-    test_size=0.2,
-    random_state=12,
-    stratify=train_df["MGMT_value"],
+    train_df, test_size=0.2, random_state=12, stratify=train_df["MGMT_value"]
 )
 
 
@@ -58,17 +55,11 @@ def train_mri_type(df_train, df_valid, mri_type):
     )
 
     train_loader = torch_data.DataLoader(
-        train_data_retriever,
-        batch_size=4,
-        shuffle=True,
-        num_workers=8,
+        train_data_retriever, batch_size=4, shuffle=True, num_workers=8
     )
 
     valid_loader = torch_data.DataLoader(
-        valid_data_retriever,
-        batch_size=4,
-        shuffle=False,
-        num_workers=8,
+        valid_data_retriever, batch_size=4, shuffle=False, num_workers=8
     )
 
     run = wandb.init(project="RSNA-MICCAI", entity="sauravmaheshkar")
@@ -84,12 +75,8 @@ def train_mri_type(df_train, df_valid, mri_type):
 
     trainer = Trainer(model, device, optimizer, criterion)
 
-    history = trainer.fit(
-        10,
-        train_loader,
-        valid_loader,
-        f"{mri_type}",
-        10,
+    history = trainer.fit(  # noqa: F841
+        10, train_loader, valid_loader, f"{mri_type}", 10
     )
 
     run.finish()
