@@ -1,3 +1,5 @@
+![](https://anaconda.org/sauravmaheshkar/rsna/badges/latest_release_date.svg) ![](https://anaconda.org/sauravmaheshkar/rsna/badges/license.svg) ![](https://github.com/SauravMaheshkar/RSNA-MICCAI/actions/workflows/main.yml/badge.svg) ![](https://img.shields.io/docker/image-size/sauravmaheshkar/rsna.svg)
+
 My codebase and model files for the "[RSNA-MICCAI Brain Tumor Radiogenomic Classification](https://www.kaggle.com/c/rsna-miccai-brain-tumor-radiogenomic-classification/overview)" Kaggle Competition.
 
 [Link to the Kernel to Reproduce Experiments](https://www.kaggle.com/sauravmaheshkar/rsna-miccai-the-random-seed-fluke/) | [Weights and Biases Report ⭐️](https://wandb.ai/sauravmaheshkar/RSNA-MICCAI/reports/The-Fluke--VmlldzoxMDA2MDQy) | [Weights and Biases Project](https://wandb.ai/sauravmaheshkar/RSNA-MICCAI) |
