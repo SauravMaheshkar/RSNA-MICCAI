@@ -12,7 +12,7 @@ data_directory = "../input/rsna-miccai-brain-tumor-radiogenomic-classification"
 
 
 def load_dicom_image(data_directory, img_size: int = 256, voi_lut: bool = True):
-    dicom = pydicom.read_file(data_directory)
+    dicom = pydicom.read_file(data_directory)  # type: ignore
     data = dicom.pixel_array
     if voi_lut:
         data = apply_voi_lut(dicom.pixel_array, dicom)
